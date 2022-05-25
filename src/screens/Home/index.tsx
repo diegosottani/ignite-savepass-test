@@ -13,6 +13,7 @@ import {
   TotalPassCount,
   LoginList,
 } from './styles';
+import { Alert } from 'react-native';
 
 interface LoginDataProps {
   id: string;
@@ -30,15 +31,25 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
-    // Get asyncStorage data, use setSearchListData and setData
+    const data = await AsyncStorage.getItem(dataKey);
+
+    if(data){
+      setData(JSON.parse(data));
+      setSearchListData(JSON.parse(data));
+    }
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    const filtered = data.filter((d) => d.service_name === searchText)
+    setSearchListData(filtered)
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    if(text === ''){
+      Alert.alert('Favor digitar um texto')
+      return
+    }
+    setSearchText(text)
   }
 
   useFocusEffect(useCallback(() => {
